@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build index.html --out-dir ../static/"
+    "build": "parcel index.html --out-dir ../static/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "@types/react": "^16.9.14",
+    "@types/react-dom": "^16.9.4",
+    "react": "0.0.0-experimental-b53ea6ca0",
+    "react-dom": "0.0.0-experimental-b53ea6ca0",
+    "styled-components": "^4.4.1"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",

@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import App from './App';
+
 const render = () => {
-  const elem = document.getElementById('root');
-  ReactDOM.render(<h1>hello</h1>, elem);
+  const rootElem = document.getElementById('root');
+  // ReactDOM.render(<App />, rootElem);
+  ReactDOM.createRoot(rootElem).render(<App />);
 };
 
 render();
