@@ -39,31 +39,44 @@ const Main = styled.main`
 // const mockNowPlaying = [...mockFeaturedMovies].sort(() => 0.5 - Math.random());
 // const MockTopRated = [...mockFeaturedMovies].sort(() => 0.5 - Math.random());
 
-const getMovie = resourceName =>
-  fetch(`/api/movies/${resourceName}`).then(res => {
-    if (!res.ok) throw new Error('Failed to retrieve movie resource');
+// const getMovie = resourceName =>
+//   fetch(`/api/movies/${resourceName}`).then(res => {
+//     if (!res.ok) throw new Error('Failed to retrieve movie resource');
+//     return res.json();
+//   });
+
+const getData = endpoint =>
+  fetch(endpoint).then(res => {
+    if (!res.ok) throw new Error(`Failed to retrieve ${endpoint}`);
     return res.json();
   });
 
-const createMovieResource = resourceName => {
+const createResource = ({ resourceType, resourceName }) => {
   let status: 'pending' | 'success' | 'error' = 'pending';
   let result;
-  let suspender = getMovie(resourceName)
-    .then(data => {
-      status = 'success';
-      result = data;
-    })
-    .catch(err => {
-      status = 'error';
-      result = err;
-    });
-  return {
+  // let suspender = getMovie(resourceName)
+  const endpoint = `/api/${resourceType}/${resourceName}`;
+  const handleSuccess: (value: any) => void | PromiseLike<void> = data => {
+    status = 'success';
+    result = data;
+  };
+  const handleError: (reason: any) => void | PromiseLike<void> = err => {
+    status = 'error';
+    result = err;
+  };
+  let suspender = getData(endpoint)
+    .then(handleSuccess)
+    .catch(handleError);
+
+  const resource = {
     read() {
       if (status === 'pending') throw suspender;
       if (status === 'error') throw result;
       if (status === 'success') return result;
     },
   };
+
+  return resource;
 };
 
 // const PopularPreviewTrack = props => {
@@ -72,7 +85,7 @@ const createMovieResource = resourceName => {
 
 //   React.useEffect(() => {
 //     startTransition(() => {
-//       setResource(createMovieResource('popular'));
+//       setResource(createResource('popular'));
 //     });
 //   }, []);
 
@@ -84,7 +97,7 @@ const createMovieResource = resourceName => {
 //   );
 // };
 
-const usePreviewTrack = ({ resourceName }) => {
+const usePreviewTrack = ({ resourceType, resourceName }) => {
   const [resource, setResource] = React.useState();
   const [startTransition, isPending] = React.useTransition({
     timeoutMs: 1000,
@@ -92,25 +105,22 @@ const usePreviewTrack = ({ resourceName }) => {
 
   React.useEffect(() => {
     startTransition(() => {
-      setResource(createMovieResource(resourceName));
+      setResource(createResource({ resourceType, resourceName }));
     });
   }, []);
 
   return { resource, setResource, startTransition, isPending };
 };
 
-const FetchingPreviewTrack = ({ resourceName, title }) => {
-  const { resource, isPending } = usePreviewTrack({ resourceName });
+const FetchingPreviewTrack = ({ resourceType, resourceName, title }) => {
+  const { resource, isPending } = usePreviewTrack({
+    resourceType,
+    resourceName,
+  });
   return (
     <PreviewTrack
       title={title}
-      movies={
-        resource
-          ? resource.read()
-          : isPending
-          ? new Array(7).fill(null).map((_, i) => ({}))
-          : []
-      }
+      movies={resource ? resource.read() : []}
       isPending={isPending}
     ></PreviewTrack>
   );
@@ -119,10 +129,62 @@ const FetchingPreviewTrack = ({ resourceName, title }) => {
 const MainContent = props => {
   return (
     <Main>
-      <FetchingPreviewTrack resourceName="popular" title="Popular" />
-      <FetchingPreviewTrack resourceName="now_playing" title="Now Playing" />
-      <FetchingPreviewTrack resourceName="upcoming" title="Upcoming" />
-      <FetchingPreviewTrack resourceName="top_rated" title="Top Rated" />
+      <React.Suspense
+        fallback={
+          <PreviewTrack
+            title="Popular"
+            movies={new Array(7).fill(null).map(() => ({}))}
+          />
+        }
+      >
+        <FetchingPreviewTrack
+          resourceType="movies"
+          resourceName="popular"
+          title="Popular"
+        />
+      </React.Suspense>
+      <React.Suspense
+        fallback={
+          <PreviewTrack
+            title="Now Playing"
+            movies={new Array(7).fill(null).map(() => ({}))}
+          />
+        }
+      >
+        <FetchingPreviewTrack
+          resourceType="movies"
+          resourceName="now_playing"
+          title="Now Playing"
+        />
+      </React.Suspense>
+      <React.Suspense
+        fallback={
+          <PreviewTrack
+            title="Upcoming"
+            movies={new Array(7).fill(null).map(() => ({}))}
+          />
+        }
+      >
+        <FetchingPreviewTrack
+          resourceType="movies"
+          resourceName="upcoming"
+          title="Upcoming"
+        />
+      </React.Suspense>
+      <React.Suspense
+        fallback={
+          <PreviewTrack
+            title="Popular"
+            movies={new Array(7).fill(null).map(() => ({}))}
+          />
+        }
+      >
+        <FetchingPreviewTrack
+          resourceType="movies"
+          resourceName="top_rated"
+          title="Top Rated"
+        />
+      </React.Suspense>
       {/* <PreviewTrack title="Featured" movies={mockFeaturedMovies} />
       <PreviewTrack title="New Releases" movies={mockNewReleases} />
       <PreviewTrack title="Now Playing" movies={mockNowPlaying} />

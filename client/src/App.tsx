@@ -15,9 +15,7 @@ const App = props => {
         <ApplicationContainer>
           <GlobalStyle />
           <Header></Header>
-          <React.Suspense fallback={<h2>Loading...</h2>}>
-            <MainContent></MainContent>
-          </React.Suspense>
+          <MainContent></MainContent>
         </ApplicationContainer>
       </ErrorBoundary>
     </ThemeProvider>
