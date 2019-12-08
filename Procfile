@@ -1,0 +1,1 @@
+web: cd ./client && npm run build && ./target/release/main

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel index.html --out-dir ../static/"
+    "dev": "parcel index.html --out-dir ../static/",
+    "build": "parcel build index.html --out-dir ../static/"
   },
   "keywords": [],
   "author": "",
