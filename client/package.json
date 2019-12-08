@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/react": "^16.9.14",
     "@types/react-dom": "^16.9.4",
+    "pure-react-carousel": "^1.24.1",
     "react": "0.0.0-experimental-b53ea6ca0",
     "react-dom": "0.0.0-experimental-b53ea6ca0",
     "styled-components": "^4.4.1"

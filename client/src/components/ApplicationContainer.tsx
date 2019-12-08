@@ -9,7 +9,9 @@ const ApplicationContainer = styled.div`
     url(https://image.tmdb.org/t/p/w1280/xJWPZIYOEFIjZpBL7SVBGnzRYXp.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
   min-height: 100vh;
+  overflow-x: hidden;
 `;
 
 export default ApplicationContainer;

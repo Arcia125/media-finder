@@ -66,20 +66,52 @@ const createMovieResource = resourceName => {
   };
 };
 
-const FeaturedPreviewTrack = props => {
+// const PopularPreviewTrack = props => {
+//   const [resource, setResource] = React.useState();
+//   const [startTransition, isPending] = React.useTransition({ timeoutMs: 1000 });
+
+//   React.useEffect(() => {
+//     startTransition(() => {
+//       setResource(createMovieResource('popular'));
+//     });
+//   }, []);
+
+//   return (
+//     <PreviewTrack
+//       title="Popular"
+//       movies={resource ? resource.read() : []}
+//     ></PreviewTrack>
+//   );
+// };
+
+const usePreviewTrack = ({ resourceName }) => {
   const [resource, setResource] = React.useState();
-  const [startTransition, isPending] = React.useTransition({ timeoutMs: 1000 });
+  const [startTransition, isPending] = React.useTransition({
+    timeoutMs: 1000,
+  });
 
   React.useEffect(() => {
     startTransition(() => {
-      setResource(createMovieResource('featured'));
+      setResource(createMovieResource(resourceName));
     });
   }, []);
 
+  return { resource, setResource, startTransition, isPending };
+};
+
+const FetchingPreviewTrack = ({ resourceName, title }) => {
+  const { resource, isPending } = usePreviewTrack({ resourceName });
   return (
     <PreviewTrack
-      title="Featured"
-      movies={resource ? resource.read() : []}
+      title={title}
+      movies={
+        resource
+          ? resource.read()
+          : isPending
+          ? new Array(7).fill(null).map((_, i) => ({}))
+          : []
+      }
+      isPending={isPending}
     ></PreviewTrack>
   );
 };
@@ -87,7 +119,10 @@ const FeaturedPreviewTrack = props => {
 const MainContent = props => {
   return (
     <Main>
-      <FeaturedPreviewTrack />
+      <FetchingPreviewTrack resourceName="popular" title="Popular" />
+      <FetchingPreviewTrack resourceName="now_playing" title="Now Playing" />
+      <FetchingPreviewTrack resourceName="upcoming" title="Upcoming" />
+      <FetchingPreviewTrack resourceName="top_rated" title="Top Rated" />
       {/* <PreviewTrack title="Featured" movies={mockFeaturedMovies} />
       <PreviewTrack title="New Releases" movies={mockNewReleases} />
       <PreviewTrack title="Now Playing" movies={mockNowPlaying} />
