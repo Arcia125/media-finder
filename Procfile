@@ -1,1 +1,1 @@
-web: npm run build --prefix ./client/ && cd ./target/release/main
+web: ./target/release/main

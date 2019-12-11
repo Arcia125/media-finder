@@ -1,0 +1,19 @@
+{
+  "name": "media-find",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "heroku-postbuild": "npm run build --prefix ./client/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arcia125/media-finder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arcia125/media-finder/issues"
+  },
+  "homepage": "https://github.com/Arcia125/media-finder#readme"
+}
