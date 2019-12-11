@@ -1,1 +1,1 @@
-web: ./target/release/media-find
+web: ROCKET_PORT=$PORT ./target/release/media-find
