@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-postinstall": "cd ./client && npm install && npm run build && cd .."
+    "heroku-postinstall": "npm install --prefix ./client",
+    "heroku-postbuild": "npm run build --prefix ./client"
   },
   "repository": {
     "type": "git",
