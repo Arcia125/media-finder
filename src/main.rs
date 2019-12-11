@@ -11,6 +11,8 @@
 use std::result::Result;
 use std::sync::Mutex;
 use std::collections::HashMap;
+use std::env;
+use std::cell::RefCell;
 
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
@@ -64,8 +66,11 @@ struct MovieResponse {
 
 const TMDB_BASE_URL: &'static str = "https://api.themoviedb.org";
 
+thread_local!(static API_KEY: RefCell<String> = RefCell::new(env::var("TMDB_API_KEY").unwrap()));
+
 fn get_movies(resource_name: String) -> Option<MovieResponse> {
-    match reqwest::blocking::get(&format!("{}/3/movie/{}?api_key={}&language=en-US&page=1", TMDB_BASE_URL, resource_name, env!("TMDB_API_KEY"))) {
+    API_KEY.with(|api_key_ref_cell| {
+        match reqwest::blocking::get(&format!("{}/3/movie/{}?api_key={}&language=en-US&page=1", TMDB_BASE_URL, resource_name, api_key_ref_cell.borrow())) {
         Ok(res) => {
             match res.text() {
                 Ok(text) => {
@@ -88,6 +93,8 @@ fn get_movies(resource_name: String) -> Option<MovieResponse> {
             None
         }
     }
+    })
+
 }
 
 #[get("/movies/<resource_name>", format = "json")]
