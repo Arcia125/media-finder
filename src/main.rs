@@ -71,28 +71,28 @@ thread_local!(static API_KEY: RefCell<String> = RefCell::new(env::var("TMDB_API_
 fn get_movies(resource_name: String) -> Option<MovieResponse> {
     API_KEY.with(|api_key| {
         match reqwest::blocking::get(&format!("{}/3/movie/{}?api_key={}&language=en-US&page=1", TMDB_BASE_URL, resource_name, api_key.borrow())) {
-        Ok(res) => {
-            match res.text() {
-                Ok(text) => {
-                    match serde_json::from_str::<MovieResponse>(&text) {
-                        Ok(json) => Some(json),
-                        Err(error) => {
-                            println!("Error: {:?}", error);
-                            None
+            Ok(res) => {
+                match res.text() {
+                    Ok(text) => {
+                        match serde_json::from_str::<MovieResponse>(&text) {
+                            Ok(json) => Some(json),
+                            Err(error) => {
+                                println!("Error: {:?}", error);
+                                None
+                            }
                         }
+                    },
+                    Err(error) => {
+                        println!("Error: {:?}", error);
+                        None
                     }
-                },
-                Err(error) => {
-                    println!("Error: {:?}", error);
-                    None
                 }
+            },
+            Err(error) => {
+                println!("Error: {:?}", error);
+                None
             }
-        },
-        Err(error) => {
-            println!("Error: {:?}", error);
-            None
         }
-    }
     })
 
 }

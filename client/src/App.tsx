@@ -7,6 +7,7 @@ import GlobalStyle from './components/GlobalStyle';
 import { theme } from './theme';
 import MainContent from './components/MainContent';
 import ErrorBoundary from './components/ErrorBoundary';
+import Footer from './components/Footer';
 
 const App = props => {
   return (
@@ -16,6 +17,7 @@ const App = props => {
           <GlobalStyle />
           <Header></Header>
           <MainContent></MainContent>
+          <Footer />
         </ApplicationContainer>
       </ErrorBoundary>
     </ThemeProvider>
