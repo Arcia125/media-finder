@@ -17,6 +17,7 @@
     "pure-react-carousel": "^1.24.1",
     "react": "0.0.0-experimental-b53ea6ca0",
     "react-dom": "0.0.0-experimental-b53ea6ca0",
+    "react-router-dom": "^5.1.2",
     "styled-components": "^4.4.1",
     "typescript": "^3.7.2"
   },

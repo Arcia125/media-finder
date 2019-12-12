@@ -9,6 +9,7 @@ import {
   WithStore,
 } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
+import { Link } from 'react-router-dom';
 
 import { themeSpacing, themeMargin } from '../themeHelpers';
 import Thumbnail, { ThumbnailContainer, ThumbnailDetails } from './Thumbnail';
@@ -128,8 +129,10 @@ const InnerTrack = WithStore(
             {movies &&
               movies.map((movie, i) => (
                 // <Slide index={i} key={i}>
-                <ThumbSlide index={i} key={i}>
-                  <Thumbnail image={movie.image} title={movie.title} />
+                <ThumbSlide key={i} index={i}>
+                  <Link to={`/movie/${movie.id}`}>
+                    <Thumbnail image={movie.image} title={movie.title} />
+                  </Link>
                 </ThumbSlide>
                 // </Slide>
               ))}

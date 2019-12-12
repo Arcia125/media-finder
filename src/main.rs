@@ -1,22 +1,22 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
-#[macro_use] extern crate serde_json;
-#[macro_use] extern crate reqwest;
+extern crate rocket_contrib;
+extern crate serde_json;
+extern crate reqwest;
 
 #[cfg(test)] mod tests;
 
 use std::result::Result;
-use std::sync::Mutex;
-use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 use std::env;
 use std::cell::RefCell;
 
-use rocket::State;
-use rocket_contrib::json::{Json, JsonValue};
-use rocket_contrib::serve::StaticFiles;
+use rocket::{Request, Response};
+use rocket::response::{NamedFile, Responder};
+use rocket::http::Status;
+use rocket_contrib::json::{Json};
 
 #[derive(Serialize, Deserialize)]
 struct MovieMeta {
@@ -35,19 +35,19 @@ struct MovieMeta {
     vote_average: f32,
     vote_count: i32
 }
-#[derive(Serialize, Deserialize)]
-struct Genre {
-    id: i32,
-    name: String
-}
+// #[derive(Serialize, Deserialize)]
+// struct Genre {
+//     id: i32,
+//     name: String
+// }
 
-#[derive(Serialize, Deserialize)]
-struct TvMeta {
-    adult: bool,
-    backdrop_path: Option<String>,
-    belongs_to_collection: Option<String>,
-    genres: Vec<Genre>
-}
+// #[derive(Serialize, Deserialize)]
+// struct TvMeta {
+//     adult: bool,
+//     backdrop_path: Option<String>,
+//     belongs_to_collection: Option<String>,
+//     genres: Vec<Genre>
+// }
 
 #[derive(Serialize, Deserialize)]
 struct Movie {
@@ -94,7 +94,27 @@ fn get_movies(resource_name: String) -> Option<MovieResponse> {
             }
         }
     })
+}
 
+enum PathResp { File(PathBuf), Dir(PathBuf) }
+
+impl Responder<'static> for PathResp {
+    fn respond_to(self, req: &Request) -> Result<Response<'static>, Status> {
+        match self {
+            PathResp::File(path) => NamedFile::open(Path::new("static").join(path)).ok().respond_to(req),
+            PathResp::Dir(_path) => NamedFile::open(Path::new("static/index.html")).ok().respond_to(req)
+        }
+    }
+}
+
+#[get("/", rank = 10)]
+fn index() -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/index.html")).ok()
+}
+
+#[get("/<path..>", rank = 10)]
+fn files(path: PathBuf) -> PathResp {
+    if path.is_dir() { PathResp::Dir(path) } else { PathResp::File(path) }
 }
 
 #[get("/movies/<resource_name>", format = "json")]
@@ -117,15 +137,12 @@ fn movies(resource_name: String) -> Json<Vec<Movie>> {
     };
 
     Json(movies)
-
-    
-    
-    // Json(vec![Movie {
-    //     id: 0,
-    //     image: "https://image.tmdb.org/t/p/w1280/qdfARIhgpgZOBh3vfNhWS4hmSo3.jpg".to_string()
-    // }])
 }
 
 fn main() {
-    rocket::ignite().mount("/", StaticFiles::from("static")).mount("/api", routes![movies]).launch();
+    
+    rocket::ignite()
+        .mount("/api", routes![movies])
+        .mount("/", routes![index, files])
+        .launch();
 }
