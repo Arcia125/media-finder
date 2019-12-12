@@ -101,7 +101,7 @@ enum PathResp { File(PathBuf), Dir(PathBuf) }
 impl Responder<'static> for PathResp {
     fn respond_to(self, req: &Request) -> Result<Response<'static>, Status> {
         match self {
-            PathResp::File(path) => NamedFile::open(Path::new("static").join(path)).ok().respond_to(req),
+            PathResp::File(path) => NamedFile::open(path).ok().respond_to(req),
             PathResp::Dir(_path) => NamedFile::open(Path::new("static/index.html")).ok().respond_to(req)
         }
     }
@@ -114,7 +114,8 @@ fn index() -> Option<NamedFile> {
 
 #[get("/<path..>", rank = 10)]
 fn files(path: PathBuf) -> PathResp {
-    if path.is_dir() { PathResp::Dir(path) } else { PathResp::File(path) }
+    let static_path = Path::new("static").join(path);
+    if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
 }
 
 #[get("/movies/<resource_name>", format = "json")]

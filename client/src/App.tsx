@@ -9,6 +9,7 @@ import GlobalStyle from './components/GlobalStyle';
 import Home from './components/Home';
 import ErrorBoundary from './components/ErrorBoundary';
 import Footer from './components/Footer';
+import TitleSingle from './components/TitleSingle';
 
 const App = props => {
   return (
@@ -22,7 +23,7 @@ const App = props => {
               <Home />
             </Route>
             <Route path="/movie/:movieId">
-              <div>movie</div>
+              <TitleSingle />
             </Route>
           </Route>
         <Footer />
