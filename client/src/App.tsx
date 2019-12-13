@@ -23,10 +23,12 @@ const App = props => {
               <Home />
             </Route>
             <Route path="/movie/:movieId">
-              <TitleSingle />
+              <React.Suspense fallback={<h2>Loading...</h2>}>
+                <TitleSingle />
+              </React.Suspense>
             </Route>
-          </Route>
-        <Footer />
+          </Router>
+          <Footer />
         </ApplicationContainer>
       </ErrorBoundary>
     </ThemeProvider>
