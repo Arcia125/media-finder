@@ -22,7 +22,7 @@ use rocket_contrib::json::{Json};
 struct MovieMeta {
     adult: bool,
     backdrop_path: String,
-    genre_ids: Vec<i32>,
+    genre_ids: Option<Vec<i32>>,
     id: usize,
     original_language: String,
     original_title: String,
@@ -53,8 +53,10 @@ struct MovieMeta {
 struct Movie {
     id: usize,
     image: String,
-    title: String
+    title: String,
+    release_date: String
 }
+
 
 #[derive(Serialize, Deserialize)]
 struct MovieResponse {
@@ -75,6 +77,34 @@ fn get_movies(resource_name: String) -> Option<MovieResponse> {
                 match res.text() {
                     Ok(text) => {
                         match serde_json::from_str::<MovieResponse>(&text) {
+                            Ok(json) => Some(json),
+                            Err(error) => {
+                                println!("Error: {:?}", error);
+                                None
+                            }
+                        }
+                    },
+                    Err(error) => {
+                        println!("Error: {:?}", error);
+                        None
+                    }
+                }
+            },
+            Err(error) => {
+                println!("Error: {:?}", error);
+                None
+            }
+        }
+    })
+}
+
+fn get_movie(movie_id: String) -> Option<MovieMeta> {
+    API_KEY.with(|api_key| {
+        match reqwest::blocking::get(&format!("{}/3/movie/{}?api_key={}&language=en-US", TMDB_BASE_URL, movie_id, api_key.borrow())) {
+            Ok(res) => {
+                match res.text() {
+                    Ok(text) => {
+                        match serde_json::from_str::<MovieMeta>(&text) {
                             Ok(json) => Some(json),
                             Err(error) => {
                                 println!("Error: {:?}", error);
@@ -118,6 +148,26 @@ fn files(path: PathBuf) -> PathResp {
     if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
 }
 
+#[get("/movie/<movie_id>", format = "json")]
+fn movie(movie_id: String) -> Json<Option<Movie>> {
+    let response_json = get_movie(movie_id);
+
+    let mut movie: Option<Movie> = None;
+    match response_json {
+        Some(res) => {
+            movie = Some(Movie {
+                id: res.id,
+                image: format!("https://image.tmdb.org/t/p/w500{}", res.poster_path),
+                title: res.title,
+                release_date: res.release_date
+            });
+        },
+        None => {}
+    }
+
+    Json(movie)
+}
+
 #[get("/movies/<resource_name>", format = "json")]
 fn movies(resource_name: String) -> Json<Vec<Movie>> {
     println!("Resource requested {}", resource_name);
@@ -130,12 +180,13 @@ fn movies(resource_name: String) -> Json<Vec<Movie>> {
                 movies.push(Movie {
                     id: m.id,
                     image: format!("https://image.tmdb.org/t/p/w500{}", m.poster_path),
-                    title: m.title
+                    title: m.title,
+                    release_date: m.release_date
                 });
             }
         },
         None => {}
-    };
+    }
 
     Json(movies)
 }
@@ -143,7 +194,7 @@ fn movies(resource_name: String) -> Json<Vec<Movie>> {
 fn main() {
     
     rocket::ignite()
-        .mount("/api", routes![movies])
+        .mount("/api", routes![movie, movies])
         .mount("/", routes![index, files])
         .launch();
 }
