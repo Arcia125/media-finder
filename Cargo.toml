@@ -20,3 +20,7 @@ features = ["blocking"]
 version = "0.4.2"
 default-features = false
 features = ["json", "serve"]
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
