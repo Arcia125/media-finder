@@ -50,13 +50,43 @@ struct MovieMeta {
 // }
 
 #[derive(Serialize, Deserialize)]
+struct Cast {
+    cast_id: i32,
+    character: String,
+    credit_id: String,
+    gender: i32,
+    id: usize,
+    name: String,
+    order: i32,
+    profile_path: Option<String>
+}
+
+#[derive(Serialize, Deserialize)]
+struct Crew {
+    id: usize,
+    credit_id: String,
+    department: String,
+    gender: i32,
+    job: String,
+    name: String,
+    profile_path: Option<String>
+}
+
+#[derive(Serialize, Deserialize)]
+struct CreditResponse {
+    id: usize,
+    cast: Vec<Cast>,
+    crew: Vec<Crew>
+}
+
+#[derive(Serialize, Deserialize)]
 struct Movie {
     id: usize,
     image: String,
     title: String,
-    release_date: String
+    release_date: String,
+    vote_average: f32
 }
-
 
 #[derive(Serialize, Deserialize)]
 struct MovieResponse {
@@ -126,6 +156,36 @@ fn get_movie(movie_id: String) -> Option<MovieMeta> {
     })
 }
 
+fn get_movie_credits(movie_id: String) -> Option<CreditResponse> {
+    API_KEY.with(|api_key| {
+        match reqwest::blocking::get(&format!("{}/3/movie/{}/credits?api_key={}&language=en-US", TMDB_BASE_URL, movie_id, api_key.borrow())) {
+            Ok(res) => {
+                match res.text() {
+                    Ok(text) => {
+                        println!("TEXT: {:?}", text);
+
+                        match serde_json::from_str::<CreditResponse>(&text) {
+                            Ok(json) => Some(json),
+                            Err(error) => {
+                                println!("Error: {:?}", error);
+                                None
+                            }
+                        }
+                    },
+                    Err(error) => {
+                        println!("Error: {:?}", error);
+                        None
+                    }
+                }
+            },
+            Err(error) => {
+                println!("Error: {:?}", error);
+                None
+            }
+        }
+    })
+}
+
 enum PathResp { File(PathBuf), Dir(PathBuf) }
 
 impl Responder<'static> for PathResp {
@@ -159,13 +219,19 @@ fn movie(movie_id: String) -> Json<Option<Movie>> {
                 id: res.id,
                 image: format!("https://image.tmdb.org/t/p/w500{}", res.poster_path),
                 title: res.title,
-                release_date: res.release_date
+                release_date: res.release_date,
+                vote_average: res.vote_average
             });
         },
         None => {}
     }
 
     Json(movie)
+}
+
+#[get("/movie/<movie_id>/credits", format = "json")]
+fn movie_credits(movie_id: String) -> Json<Option<CreditResponse>> {
+    Json(get_movie_credits(movie_id))
 }
 
 #[get("/movies/<resource_name>", format = "json")]
@@ -181,7 +247,8 @@ fn movies(resource_name: String) -> Json<Vec<Movie>> {
                     id: m.id,
                     image: format!("https://image.tmdb.org/t/p/w500{}", m.poster_path),
                     title: m.title,
-                    release_date: m.release_date
+                    release_date: m.release_date,
+                    vote_average: m.vote_average
                 });
             }
         },
@@ -194,7 +261,7 @@ fn movies(resource_name: String) -> Json<Vec<Movie>> {
 fn main() {
     
     rocket::ignite()
-        .mount("/api", routes![movie, movies])
+        .mount("/api", routes![movie, movie_credits, movies])
         .mount("/", routes![index, files])
         .launch();
 }

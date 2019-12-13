@@ -18,6 +18,37 @@ const Title = styled.h2`
   color: #f4f4f4;
 `;
 
+const UserScore = styled.h2`
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #f4f4f4;
+`;
+
+const Duration = styled.p`
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+
+  color: #f4f4f4;
+`;
+
+const Paragraph = styled.p`
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 21px;
+
+  color: #f4f4f4;
+`;
+
 const ReleaseDate = styled(Title)`
   color: #b9b9b9;
 `;
@@ -42,6 +73,18 @@ const Top = styled.div`
 
 const Row = styled.div`
   display: flex;
+
+  align-items: center;
+`;
+
+const CrewMemberContainer = styled.div`
+  display: flex;
+
+  flex-direction: column;
+`;
+
+const CrewContainer = styled.div`
+  display: grid;
 `;
 
 const Bottom = styled.div``;
@@ -65,21 +108,86 @@ const Main = styled.main`
   }
 `;
 
-const TitleSingle = () => {
-  const { movieId } = useParams();
+const CrewMember = ({ name, jobs }) => {
+  return (
+    <CrewMemberContainer>
+      <h3>{name}</h3>
+      <p>{jobs && jobs.map(job => <span key={job}>{job}</span>)}</p>
+    </CrewMemberContainer>
+  );
+};
+
+const Crew = ({ members }) => {
+  return (
+    <CrewContainer>
+      {Object.values(
+        members.reduce((acc, curr) => {
+          if (!acc[curr.id])
+            return { ...acc, [curr.id]: { ...curr, jobs: [curr.job] } };
+
+          const existingMember = acc[curr.id];
+
+          return {
+            ...acc,
+            [curr.id]: {
+              ...existingMember,
+              ...curr,
+              jobs: [...existingMember.jobs, curr.job],
+            },
+          };
+        }, {})
+      ).map(member => (
+        <CrewMember key={member.name} name={member.name} jobs={member.jobs} />
+      ))}
+    </CrewContainer>
+  );
+};
+
+const useMediaTitleResource = ({ movieId }) => {
   const [resource, setResource] = React.useState();
   const [startTransition, isPending] = React.useTransition({
     timeoutMs: 1000,
   });
 
-  // React.useEffect(() => {
-  //   startTransition(() => {
-  //     setResource(createResource({ endpoint: `/api/movie/${movieId}` }));
-  //   });
-  // }, [movieId]);
+  React.useEffect(() => {
+    startTransition(() => {
+      setResource(createResource({ endpoint: `/api/movie/${movieId}` }));
+    });
+  }, [movieId]);
 
-  const mediaTitle = resource
-    ? resource.read()
+  return {
+    resource,
+    isPending,
+  };
+};
+
+const useCreditsResource = ({ movieId }) => {
+  const [resource, setResource] = React.useState();
+  const [startTransition, isPending] = React.useTransition({
+    timeoutMs: 1000,
+  });
+
+  React.useEffect(() => {
+    startTransition(() => {
+      setResource(
+        createResource({ endpoint: `/api/movie/${movieId}/credits` })
+      );
+    });
+  }, [movieId]);
+
+  return {
+    resource,
+    isPending,
+  };
+};
+
+const TitleSingle = () => {
+  const { movieId } = useParams();
+
+  const mediaTitleResource = useMediaTitleResource({ movieId });
+  const creditsResource = useCreditsResource({ movieId });
+  const mediaTitle = mediaTitleResource.resource
+    ? mediaTitleResource.resource.read()
     : {
         id: 330457,
         image:
@@ -88,7 +196,12 @@ const TitleSingle = () => {
         release_date: '2019-11-20',
       };
 
+  const credits = creditsResource.resource
+    ? creditsResource.resource.read()
+    : { cast: [], crew: [] };
+
   console.log(mediaTitle);
+  console.log(credits);
 
   return (
     <Main>
@@ -102,6 +215,16 @@ const TitleSingle = () => {
                 `(${new Date(mediaTitle.release_date).getFullYear()})`}
             </ReleaseDate>
           </Row>
+          <Row>
+            <Title>71%</Title>
+            <UserScore>User Score</UserScore>
+          </Row>
+          <Duration>1h 44m</Duration>
+          <Paragraph>
+            Elsa, Anna, Kristoff and Olaf head far into the forest to learn the
+            truth about an ancient mystery of their kingdom.
+          </Paragraph>
+          <Crew members={credits ? credits.crew : []} />
         </Information>
       </Top>
       <Bottom />
