@@ -43,7 +43,7 @@ const usePreviewTrack = ({ resourceType, resourceName }) => {
         createResource({ endpoint: `/api/${resourceType}/${resourceName}` })
       );
     });
-  }, []);
+  }, [resourceType, resourceName]);
 
   return { resource, setResource, startTransition, isPending };
 };

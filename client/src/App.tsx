@@ -67,14 +67,18 @@ const App = props => {
               >
                 <Header></Header>
                 <GlobalStyle />
-                <Route path="/" exact>
-                  <Home />
-                </Route>
-                <Route path="/movie/:movieId">
-                  <React.Suspense fallback={<h2>Loading...</h2>}>
-                    <TitleSingle />
-                  </React.Suspense>
-                </Route>
+                <React.Suspense fallback={<h1>Loading...</h1>}>
+                  <Switch>
+                    <Route path="/" exact>
+                      <Home />
+                    </Route>
+                    <Route path="/movie/:movieId">
+                      <React.Suspense fallback={<h2>Loading...</h2>}>
+                        <TitleSingle />
+                      </React.Suspense>
+                    </Route>
+                  </Switch>
+                </React.Suspense>
                 <Footer />
               </WrapppedApplicationContainer>
             </StateContext.Provider>
