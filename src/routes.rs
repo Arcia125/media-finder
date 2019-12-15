@@ -36,7 +36,7 @@ pub fn files(path: PathBuf) -> PathResp {
     if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
 }
 
-#[get("/movie/<movie_id>", format = "json")]
+#[get("/movie/<movie_id>", format = "json", rank = 1)]
 pub fn movie(movie_id: String) -> Json<Option<models::Movie>> {
     let response_json = controllers::get_movie(movie_id);
 
@@ -51,12 +51,12 @@ pub fn movie(movie_id: String) -> Json<Option<models::Movie>> {
     Json(movie)
 }
 
-#[get("/movie/<movie_id>/credits", format = "json")]
+#[get("/movie/<movie_id>/credits", format = "json", rank = 1)]
 pub fn movie_credits(movie_id: String) -> Json<Option<models::CreditResponse>> {
     Json(controllers::get_movie_credits(movie_id))
 }
 
-#[get("/movies/<resource_name>", format = "json")]
+#[get("/movies/<resource_name>", format = "json", rank = 1)]
 pub fn movies(resource_name: String) -> Json<Vec<models::Movie>> {
     println!("Resource requested {}", resource_name);
     let response_json = controllers::get_movies(resource_name);
