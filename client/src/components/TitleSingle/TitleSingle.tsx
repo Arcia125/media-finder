@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
 import { themeSpacing, themeMargin, themeFontFamily } from '../../themeHelpers';
 import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
+import { UpdateContext } from '../../backdropContext';
 
 const PosterImage = styled.img``;
 
@@ -157,6 +158,7 @@ const TitleSingle = () => {
 
   const mediaTitleResource = useMediaTitleResource({ movieId });
   const creditsResource = useCreditsResource({ movieId });
+  const backdropCtx = useContext(UpdateContext);
   const mediaTitle = mediaTitleResource.resource
     ? mediaTitleResource.resource.read()
     : {
@@ -166,6 +168,15 @@ const TitleSingle = () => {
         // title: 'Frozen II',
         // release_date: '2019-11-20',
       };
+
+  React.useEffect(() => {
+    if (
+      mediaTitle.backdrop_path &&
+      !backdropCtx.backgroundMatches(mediaTitle.backdrop_path)
+    ) {
+      backdropCtx.setBackdropPath(mediaTitle.backdrop_path);
+    }
+  }, [mediaTitle.backdrop_path]);
 
   const credits = creditsResource.resource
     ? creditsResource.resource.read()

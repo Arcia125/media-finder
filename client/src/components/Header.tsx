@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Logo from './Logo';
@@ -15,9 +16,9 @@ const HeaderContainer = styled.header`
 const Header = props => {
   return (
     <HeaderContainer>
-      <a href="/">
+      <Link to="/">
         <Logo>Media Finder</Logo>
-      </a>
+      </Link>
     </HeaderContainer>
   );
 };

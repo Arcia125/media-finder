@@ -69,7 +69,8 @@ pub struct Movie {
     pub release_date: String,
     pub vote_average: f32,
     pub overview: String,
-    pub runtime: Option<i32>
+    pub runtime: Option<i32>,
+    pub backdrop_path: String
 }
 
 impl Movie {
@@ -81,7 +82,8 @@ impl Movie {
       release_date: movie_meta.release_date,
       vote_average: movie_meta.vote_average,
       overview: movie_meta.overview,
-      runtime: movie_meta.runtime
+      runtime: movie_meta.runtime,
+      backdrop_path: movie_meta.backdrop_path
     }
   }
 }

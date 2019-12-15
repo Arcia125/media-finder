@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { themeSpacing, themeMargin } from '../themeHelpers';
 import PreviewTrack, { TrackContainer } from './PreviewTrack';
 import { createResource } from '../utils/createResource';
+import { UpdateContext, initialStateContext } from '../backdropContext';
 
 const Main = styled.main`
   margin-top: ${themeSpacing(12)};
@@ -62,6 +63,13 @@ const FetchingPreviewTrack = ({ resourceType, resourceName, title }) => {
 };
 
 const Home = props => {
+  const backdropContext = useContext(UpdateContext);
+
+  useEffect(() => {
+    backdropContext.setBackdropPath(
+      initialStateContext.backgroundImage.split('/').slice(-1)[0]
+    );
+  }, []);
   return (
     <Main>
       <React.Suspense
