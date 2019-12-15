@@ -2,8 +2,6 @@ extern crate rocket_contrib;
 extern crate serde_json;
 extern crate reqwest;
 
-#[cfg(test)] mod tests;
-
 use std::result::Result;
 use std::path::{Path, PathBuf};
 

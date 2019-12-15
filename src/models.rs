@@ -45,7 +45,7 @@ pub struct Cast {
 
 #[derive(Serialize, Deserialize)]
 pub struct Crew {
-    pub pubid: usize,
+    pub id: usize,
     pub credit_id: String,
     pub department: String,
     pub gender: i32,
