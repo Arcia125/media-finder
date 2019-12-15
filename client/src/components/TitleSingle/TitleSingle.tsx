@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
-import { themeSpacing, themeMargin, themeFontFamily } from '../themeHelpers';
-import { createResource } from '../utils/createResource';
+import { themeSpacing, themeMargin, themeFontFamily } from '../../themeHelpers';
+import { useMediaTitleResource } from './useMediaTitleResource';
+import { useCreditsResource } from './useCreditsResource';
 
 const PosterImage = styled.img``;
 
@@ -149,44 +150,6 @@ const Crew = ({ members }) => {
         ))}
     </CrewContainer>
   );
-};
-
-const useMediaTitleResource = ({ movieId }) => {
-  const [resource, setResource] = React.useState();
-  const [startTransition, isPending] = React.useTransition({
-    timeoutMs: 1000,
-  });
-
-  React.useEffect(() => {
-    startTransition(() => {
-      setResource(createResource({ endpoint: `/api/movie/${movieId}` }));
-    });
-  }, [movieId]);
-
-  return {
-    resource,
-    isPending,
-  };
-};
-
-const useCreditsResource = ({ movieId }) => {
-  const [resource, setResource] = React.useState();
-  const [startTransition, isPending] = React.useTransition({
-    timeoutMs: 1000,
-  });
-
-  React.useEffect(() => {
-    startTransition(() => {
-      setResource(
-        createResource({ endpoint: `/api/movie/${movieId}/credits` })
-      );
-    });
-  }, [movieId]);
-
-  return {
-    resource,
-    isPending,
-  };
 };
 
 const TitleSingle = () => {
