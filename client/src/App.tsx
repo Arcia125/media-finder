@@ -23,8 +23,6 @@ const WrapppedApplicationContainer = ({
 }) => {
   const context = React.useContext(StateContext);
 
-  window.context = context;
-
   return (
     <ApplicationContainer
       background={`
