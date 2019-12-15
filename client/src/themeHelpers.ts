@@ -6,4 +6,12 @@ const textThemeColor = themeColor('text');
 
 const themeMargin = props => props.theme.spacing(12);
 
-export { themeColor, textThemeColor, themeSpacing, themeMargin };
+const themeFontFamily = props => props.theme.fontFamily;
+
+export {
+  themeColor,
+  textThemeColor,
+  themeSpacing,
+  themeMargin,
+  themeFontFamily,
+};

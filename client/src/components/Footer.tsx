@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TMDBLogo, Svg } from './TMDBLogo';
-import { themeMargin, themeSpacing } from '../themeHelpers';
+import { themeMargin, themeSpacing, themeFontFamily } from '../themeHelpers';
 
 const Info = styled.p`
   margin: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

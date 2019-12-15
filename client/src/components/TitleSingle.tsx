@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
-import { themeSpacing, themeMargin } from '../themeHelpers';
+import { themeSpacing, themeMargin, themeFontFamily } from '../themeHelpers';
 import { createResource } from '../utils/createResource';
 
 const PosterImage = styled.img``;
 
 const Title = styled.h2`
   margin: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
   font-size: 36px;
@@ -20,7 +20,7 @@ const Title = styled.h2`
 
 const UserScore = styled.h2`
   margin: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: 600;
   font-size: 20px;
@@ -30,7 +30,7 @@ const UserScore = styled.h2`
 `;
 
 const Duration = styled.p`
-  font-family: 'Lato', sans-serif;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
   font-size: 24px;
@@ -40,7 +40,7 @@ const Duration = styled.p`
 `;
 
 const Paragraph = styled.p`
-  font-family: 'Lato', sans-serif;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -81,10 +81,16 @@ const CrewMemberContainer = styled.div`
   display: flex;
 
   flex-direction: column;
+
+  font-family: ${themeFontFamily};
+
+  color: #f4f4f4;
 `;
 
 const CrewContainer = styled.div`
   display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 `;
 
 const Bottom = styled.div``;
@@ -136,9 +142,11 @@ const Crew = ({ members }) => {
             },
           };
         }, {})
-      ).map(member => (
-        <CrewMember key={member.name} name={member.name} jobs={member.jobs} />
-      ))}
+      )
+        .slice(0, 6)
+        .map(member => (
+          <CrewMember key={member.name} name={member.name} jobs={member.jobs} />
+        ))}
     </CrewContainer>
   );
 };
@@ -189,11 +197,11 @@ const TitleSingle = () => {
   const mediaTitle = mediaTitleResource.resource
     ? mediaTitleResource.resource.read()
     : {
-        id: 330457,
-        image:
-          'https://image.tmdb.org/t/p/w500/pjeMs3yqRmFL3giJy4PMXWZTTPa.jpg',
-        title: 'Frozen II',
-        release_date: '2019-11-20',
+        // id: 330457,
+        // image:
+        //   'https://image.tmdb.org/t/p/w500/pjeMs3yqRmFL3giJy4PMXWZTTPa.jpg',
+        // title: 'Frozen II',
+        // release_date: '2019-11-20',
       };
 
   const credits = creditsResource.resource
@@ -216,14 +224,15 @@ const TitleSingle = () => {
             </ReleaseDate>
           </Row>
           <Row>
-            <Title>71%</Title>
+            <Title>
+              {mediaTitle.vote_average
+                ? `${mediaTitle.vote_average * 10}%`
+                : 'N/A'}
+            </Title>
             <UserScore>User Score</UserScore>
           </Row>
           <Duration>1h 44m</Duration>
-          <Paragraph>
-            Elsa, Anna, Kristoff and Olaf head far into the forest to learn the
-            truth about an ancient mystery of their kingdom.
-          </Paragraph>
+          <Paragraph>{mediaTitle.overview}</Paragraph>
           <Crew members={credits ? credits.crew : []} />
         </Information>
       </Top>

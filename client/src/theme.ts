@@ -8,9 +8,12 @@ const colors = {
 
 const spacing = amount => `${UNIT * amount}px`;
 
+const fontFamily = "'Lato', sans-serif";
+
 const theme = {
   colors,
   spacing,
+  fontFamily,
 };
 
 export { theme };

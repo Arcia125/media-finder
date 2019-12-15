@@ -14,7 +14,6 @@ mod routes;
 
 
 fn main() {
-    
     rocket::ignite()
         .mount("/api", routes![routes::movie, routes::movie_credits, routes::movies])
         .mount("/", routes![routes::index, routes::files])

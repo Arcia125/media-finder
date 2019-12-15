@@ -11,7 +11,7 @@ import {
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Link } from 'react-router-dom';
 
-import { themeSpacing, themeMargin } from '../themeHelpers';
+import { themeSpacing, themeMargin, themeFontFamily } from '../themeHelpers';
 import Thumbnail, { ThumbnailContainer, ThumbnailDetails } from './Thumbnail';
 import ArrowIcon from './ArrowIcon';
 
@@ -19,7 +19,7 @@ const SLIDE_WIDTH = 216;
 const SLIDE_GAP = 4;
 
 const TrackTitle = styled.h2`
-  font-family: Lato;
+  font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: 600;
   font-size: 24px;
