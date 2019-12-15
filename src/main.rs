@@ -18,71 +18,13 @@ use rocket::http::Status;
 
 mod models;
 mod controllers;
+mod routes;
 
-pub enum PathResp { File(PathBuf), Dir(PathBuf) }
-
-impl Responder<'static> for PathResp {
-    fn respond_to(self, req: &Request) -> Result<Response<'static>, Status> {
-        match self {
-            PathResp::File(path) => NamedFile::open(path).ok().respond_to(req),
-            PathResp::Dir(_path) => NamedFile::open(Path::new("static/index.html")).ok().respond_to(req)
-        }
-    }
-}
-
-#[get("/", rank = 10)]
-fn index() -> Option<NamedFile> {
-    NamedFile::open(Path::new("static/index.html")).ok()
-}
-
-#[get("/<path..>", rank = 10)]
-fn files(path: PathBuf) -> PathResp {
-    let static_path = Path::new("static").join(path);
-    if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
-}
-
-#[get("/movie/<movie_id>", format = "json")]
-fn movie(movie_id: String) -> Json<Option<models::Movie>> {
-    let response_json = controllers::get_movie(movie_id);
-
-    let mut movie: Option<models::Movie> = None;
-    match response_json {
-        Some(res) => {
-            movie = Some(models::Movie::from_movie_meta(res));
-        },
-        None => {}
-    }
-
-    Json(movie)
-}
-
-#[get("/movie/<movie_id>/credits", format = "json")]
-fn movie_credits(movie_id: String) -> Json<Option<models::CreditResponse>> {
-    Json(controllers::get_movie_credits(movie_id))
-}
-
-#[get("/movies/<resource_name>", format = "json")]
-fn movies(resource_name: String) -> Json<Vec<models::Movie>> {
-    println!("Resource requested {}", resource_name);
-    let response_json = controllers::get_movies(resource_name);
-
-    let mut movies: Vec<models::Movie> = vec![];
-    match response_json {
-        Some(res) => {
-            for m in res.results {
-                movies.push(models::Movie::from_movie_meta(m));
-            }
-        },
-        None => {}
-    }
-
-    Json(movies)
-}
 
 fn main() {
     
     rocket::ignite()
-        .mount("/api", routes![movie, movie_credits, movies])
-        .mount("/", routes![index, files])
+        .mount("/api", routes![routes::movie, routes::movie_credits, routes::movies])
+        .mount("/", routes![routes::index, routes::files])
         .launch();
 }
