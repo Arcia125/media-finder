@@ -14,28 +14,6 @@ use rocket::http::Status;
 use crate::models;
 use crate::controllers;
 
-pub enum PathResp { File(PathBuf), Dir(PathBuf) }
-
-impl Responder<'static> for PathResp {
-    fn respond_to(self, req: &Request) -> Result<Response<'static>, Status> {
-        match self {
-            PathResp::File(path) => NamedFile::open(path).ok().respond_to(req),
-            PathResp::Dir(_path) => NamedFile::open(Path::new("static/index.html")).ok().respond_to(req)
-        }
-    }
-}
-
-#[get("/", rank = 10)]
-pub fn index() -> Option<NamedFile> {
-    NamedFile::open(Path::new("static/index.html")).ok()
-}
-
-#[get("/<path..>", rank = 10)]
-pub fn files(path: PathBuf) -> PathResp {
-    let static_path = Path::new("static").join(path);
-    if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
-}
-
 #[get("/movie/<movie_id>", format = "json", rank = 1)]
 pub fn movie(movie_id: String) -> Json<Option<models::Movie>> {
     let response_json = controllers::get_movie(movie_id);
@@ -72,4 +50,26 @@ pub fn movies(resource_name: String) -> Json<Vec<models::Movie>> {
     }
 
     Json(movies)
+}
+
+pub enum PathResp { File(PathBuf), Dir(PathBuf) }
+
+impl Responder<'static> for PathResp {
+    fn respond_to(self, req: &Request) -> Result<Response<'static>, Status> {
+        match self {
+            PathResp::File(path) => NamedFile::open(path).ok().respond_to(req),
+            PathResp::Dir(_path) => NamedFile::open(Path::new("static/index.html")).ok().respond_to(req)
+        }
+    }
+}
+
+#[get("/", rank = 10)]
+pub fn index() -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/index.html")).ok()
+}
+
+#[get("/<path..>", rank = 10)]
+pub fn files(path: PathBuf) -> PathResp {
+    let static_path = Path::new("static").join(path);
+    if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
 }
