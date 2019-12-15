@@ -14,7 +14,7 @@ use rocket::http::Status;
 use crate::models;
 use crate::controllers;
 
-#[get("/movie/<movie_id>", format = "json", rank = 1)]
+#[get("/movie/<movie_id>", format = "json")]
 pub fn movie(movie_id: String) -> Json<Option<models::Movie>> {
     let response_json = controllers::get_movie(movie_id);
 
@@ -34,7 +34,7 @@ pub fn movie_credits(movie_id: String) -> Json<Option<models::CreditResponse>> {
     Json(controllers::get_movie_credits(movie_id))
 }
 
-#[get("/movies/<resource_name>", format = "json", rank = 1)]
+#[get("/movies/<resource_name>", format = "json")]
 pub fn movies(resource_name: String) -> Json<Vec<models::Movie>> {
     println!("Resource requested {}", resource_name);
     let response_json = controllers::get_movies(resource_name);
@@ -63,12 +63,12 @@ impl Responder<'static> for PathResp {
     }
 }
 
-#[get("/", rank = 10)]
+#[get("/")]
 pub fn index() -> Option<NamedFile> {
     NamedFile::open(Path::new("static/index.html")).ok()
 }
 
-#[get("/<path..>", rank = 10)]
+#[get("/<path..>", rank = 2)]
 pub fn files(path: PathBuf) -> PathResp {
     let static_path = Path::new("static").join(path);
     if static_path.is_file() { PathResp::File(static_path) } else { PathResp::Dir(static_path) }
