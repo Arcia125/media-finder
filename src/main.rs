@@ -8,14 +8,6 @@ extern crate reqwest;
 
 #[cfg(test)] mod tests;
 
-use std::result::Result;
-use std::path::{Path, PathBuf};
-
-use rocket::response::{NamedFile, Responder};
-use rocket::{Request, Response};
-use rocket_contrib::json::{Json};
-use rocket::http::Status;
-
 mod models;
 mod controllers;
 mod routes;
