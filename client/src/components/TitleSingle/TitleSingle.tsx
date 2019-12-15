@@ -182,9 +182,6 @@ const TitleSingle = () => {
     ? creditsResource.resource.read()
     : { cast: [], crew: [] };
 
-  console.log(mediaTitle);
-  console.log(credits);
-
   return (
     <Main>
       <Top>
