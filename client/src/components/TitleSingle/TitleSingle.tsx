@@ -6,8 +6,7 @@ import { themeSpacing, themeMargin, themeFontFamily } from '../../themeHelpers';
 import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
 import { UpdateContext } from '../../backdropContext';
-import { CrewContainer } from './CrewContainer';
-import { CrewMember } from './CrewMember';
+import { Crew } from './Crew';
 
 const PosterImage = styled.img`
   width: 100%;
@@ -127,34 +126,6 @@ const Cast = ({ members }) => {
         <div key={credit.id}>{JSON.stringify(credit)}</div>
       ))}
     </div>
-  );
-};
-
-const Crew = ({ members }) => {
-  return (
-    <CrewContainer>
-      {Object.values(
-        members.reduce((acc, curr) => {
-          if (!acc[curr.id])
-            return { ...acc, [curr.id]: { ...curr, jobs: [curr.job] } };
-
-          const existingMember = acc[curr.id];
-
-          return {
-            ...acc,
-            [curr.id]: {
-              ...existingMember,
-              ...curr,
-              jobs: [...existingMember.jobs, curr.job],
-            },
-          };
-        }, {})
-      )
-        .slice(0, 6)
-        .map(member => (
-          <CrewMember key={member.name} name={member.name} jobs={member.jobs} />
-        ))}
-    </CrewContainer>
   );
 };
 
