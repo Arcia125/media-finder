@@ -109,7 +109,7 @@ const Main = styled.main`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-row-gap: ${themeSpacing(7)};
 
   & ${Top} {
     grid-area: 1 / 1 / 2 / 3;
