@@ -35,7 +35,7 @@ const UserScore = styled.h2`
   color: #f4f4f4;
 `;
 
-const Duration = styled.p`
+const Runtime = styled.p`
   margin: 0 0 ${themeSpacing(7)} 0;
 
   font-family: ${themeFontFamily};
@@ -233,6 +233,11 @@ const TitleSingle = () => {
     ? creditsResource.resource.read()
     : { cast: [], crew: [] };
 
+  const { runtime } = mediaTitle;
+
+  const runtimeHours = Math.floor(runtime / 60);
+  const runtimeMinutes = runtime % 60;
+
   return (
     <Main>
       <Top>
@@ -253,7 +258,11 @@ const TitleSingle = () => {
             </Title>
             <UserScore>User Score</UserScore>
           </Row>
-          <Duration>1h 44m</Duration>
+          {runtime && (
+            <Runtime>
+              {runtimeHours}h {runtimeMinutes}m
+            </Runtime>
+          )}
           <Paragraph>{mediaTitle.overview}</Paragraph>
           <Crew members={credits ? credits.crew : []} />
         </Information>
