@@ -7,6 +7,7 @@ import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
 import { UpdateContext } from '../../backdropContext';
 import { Crew } from './Crew';
+import { Cast } from './Cast';
 
 const PosterImage = styled.img`
   width: 100%;
@@ -118,16 +119,6 @@ const Main = styled.main`
     grid-area: 2 / 1 / 3 / 3;
   }
 `;
-
-const Cast = ({ members }) => {
-  return (
-    <div>
-      {members.slice(0, 7).map(credit => (
-        <div key={credit.id}>{JSON.stringify(credit)}</div>
-      ))}
-    </div>
-  );
-};
 
 const TitleSingle = () => {
   const { movieId } = useParams();
