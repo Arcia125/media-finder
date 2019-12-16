@@ -52,6 +52,8 @@ export const CastMember = ({ character, name, profilePath }) => {
   return (
     <Container>
       <img
+        height={175}
+        width={138}
         src={`https://image.tmdb.org/t/p/w138_and_h175_face/${profilePath}`}
       />
       <div className="information">
