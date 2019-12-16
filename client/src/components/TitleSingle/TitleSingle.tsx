@@ -7,10 +7,14 @@ import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
 import { UpdateContext } from '../../backdropContext';
 
-const PosterImage = styled.img``;
+const PosterImage = styled.img`
+  width: 100%;
+`;
 
 const Title = styled.h2`
   margin: 0;
+  margin-right: ${themeSpacing(3)};
+
   font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
@@ -32,6 +36,8 @@ const UserScore = styled.h2`
 `;
 
 const Duration = styled.p`
+  margin: 0 0 ${themeSpacing(7)} 0;
+
   font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
@@ -42,6 +48,10 @@ const Duration = styled.p`
 `;
 
 const Paragraph = styled.p`
+  margin: 0 0 ${themeSpacing(3)} 0;
+
+  min-height: 118px;
+
   font-family: ${themeFontFamily};
   font-style: normal;
   font-weight: normal;
@@ -59,7 +69,7 @@ const Information = styled.div``;
 
 const Top = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 340px minmax(400px, 645px);
   grid-template-rows: 1fr;
   grid-column-gap: ${themeSpacing(9)};
   grid-row-gap: 0px;
@@ -77,6 +87,14 @@ const Row = styled.div`
   display: flex;
 
   align-items: center;
+
+  &.title {
+    margin-bottom: ${themeSpacing(5)};
+  }
+
+  &.rating {
+    margin-bottom: ${themeSpacing(4)};
+  }
 `;
 
 const CrewMemberContainer = styled.div`
@@ -87,12 +105,37 @@ const CrewMemberContainer = styled.div`
   font-family: ${themeFontFamily};
 
   color: #f4f4f4;
+
+  & h3 {
+    margin: 0 0 ${themeSpacing(1)} 0;
+
+    font-family: ${themeFontFamily};
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+
+    color: #f4f4f4;
+  }
+
+  & p {
+    margin: 0;
+
+    font-family: ${themeFontFamily};
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+
+    color: #f4f4f4;
+  }
 `;
 
 const CrewContainer = styled.div`
   display: grid;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 90px);
   grid-template-columns: repeat(3, 1fr);
+  grid-row-gap: ${themeSpacing(6)};
 `;
 
 const Bottom = styled.div``;
@@ -120,7 +163,15 @@ const CrewMember = ({ name, jobs }) => {
   return (
     <CrewMemberContainer>
       <h3>{name}</h3>
-      <p>{jobs && jobs.map(job => <span key={job}>{job}</span>)}</p>
+      <p>
+        {jobs &&
+          jobs.map((job, i) => (
+            <span key={job}>
+              {job}
+              {i !== jobs.length - 1 && ', '}
+            </span>
+          ))}
+      </p>
     </CrewMemberContainer>
   );
 };
@@ -187,14 +238,14 @@ const TitleSingle = () => {
       <Top>
         <PosterImage src={mediaTitle.image} />
         <Information>
-          <Row>
+          <Row className="title">
             <Title>{mediaTitle.title}</Title>
             <ReleaseDate>
               {mediaTitle.release_date &&
                 `(${new Date(mediaTitle.release_date).getFullYear()})`}
             </ReleaseDate>
           </Row>
-          <Row>
+          <Row className="rating">
             <Title>
               {mediaTitle.vote_average
                 ? `${mediaTitle.vote_average * 10}%`
