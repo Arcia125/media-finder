@@ -6,6 +6,8 @@ import { themeSpacing, themeMargin, themeFontFamily } from '../../themeHelpers';
 import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
 import { UpdateContext } from '../../backdropContext';
+import { CrewMemberContainer } from './CrewMemberContainer';
+import { CrewContainer } from './CrewContainer';
 
 const PosterImage = styled.img`
   width: 100%;
@@ -97,47 +99,6 @@ const Row = styled.div`
   }
 `;
 
-const CrewMemberContainer = styled.div`
-  display: flex;
-
-  flex-direction: column;
-
-  font-family: ${themeFontFamily};
-
-  color: #f4f4f4;
-
-  & h3 {
-    margin: 0 0 ${themeSpacing(1)} 0;
-
-    font-family: ${themeFontFamily};
-    font-style: normal;
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 21px;
-
-    color: #f4f4f4;
-  }
-
-  & p {
-    margin: 0;
-
-    font-family: ${themeFontFamily};
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-
-    color: #f4f4f4;
-  }
-`;
-
-const CrewContainer = styled.div`
-  display: grid;
-  grid-template-rows: repeat(2, 90px);
-  grid-template-columns: repeat(3, 1fr);
-  grid-row-gap: ${themeSpacing(6)};
-`;
-
 const Bottom = styled.div``;
 
 const Main = styled.main`
@@ -173,6 +134,16 @@ const CrewMember = ({ name, jobs }) => {
           ))}
       </p>
     </CrewMemberContainer>
+  );
+};
+
+const Cast = ({ members }) => {
+  return (
+    <div>
+      {members.slice(0, 7).map(credit => (
+        <div key={credit.id}>{JSON.stringify(credit)}</div>
+      ))}
+    </div>
   );
 };
 
@@ -267,7 +238,9 @@ const TitleSingle = () => {
           <Crew members={credits ? credits.crew : []} />
         </Information>
       </Top>
-      <Bottom />
+      <Bottom>
+        <Cast members={credits ? credits.cast : []} />
+      </Bottom>
     </Main>
   );
 };
