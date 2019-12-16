@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { CrewMemberContainer } from './CrewMemberContainer';
+
 export const CrewMember = ({ name, jobs }) => {
   return (
     <CrewMemberContainer>

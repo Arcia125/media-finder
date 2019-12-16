@@ -4,9 +4,11 @@ import { createResource } from '../../utils/createResource';
 
 export const useCreditsResource = ({ movieId }) => {
   const [resource, setResource] = React.useState();
+
   const [startTransition, isPending] = React.useTransition({
     timeoutMs: 1000,
   });
+
   React.useEffect(() => {
     startTransition(() => {
       setResource(
@@ -14,6 +16,7 @@ export const useCreditsResource = ({ movieId }) => {
       );
     });
   }, [movieId]);
+
   return {
     resource,
     isPending,

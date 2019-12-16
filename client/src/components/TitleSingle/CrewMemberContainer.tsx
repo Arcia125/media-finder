@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { themeSpacing, themeFontFamily } from '../../themeHelpers';
+
 export const CrewMemberContainer = styled.div`
   display: flex;
 
