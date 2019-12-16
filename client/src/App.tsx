@@ -48,6 +48,7 @@ const App = props => {
   );
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <ErrorBoundary>
         <Router>
           <UpdateContext.Provider
@@ -66,7 +67,6 @@ const App = props => {
                 backgroundAlpha={backgroundAlpha}
               >
                 <Header></Header>
-                <GlobalStyle />
                 <React.Suspense fallback={<h1>Loading...</h1>}>
                   <Switch>
                     <Route path="/" exact>
