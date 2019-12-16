@@ -6,8 +6,8 @@ import { themeSpacing, themeMargin, themeFontFamily } from '../../themeHelpers';
 import { useMediaTitleResource } from './useMediaTitleResource';
 import { useCreditsResource } from './useCreditsResource';
 import { UpdateContext } from '../../backdropContext';
-import { CrewMemberContainer } from './CrewMemberContainer';
 import { CrewContainer } from './CrewContainer';
+import { CrewMember } from './CrewMember';
 
 const PosterImage = styled.img`
   width: 100%;
@@ -119,23 +119,6 @@ const Main = styled.main`
     grid-area: 2 / 1 / 3 / 3;
   }
 `;
-
-const CrewMember = ({ name, jobs }) => {
-  return (
-    <CrewMemberContainer>
-      <h3>{name}</h3>
-      <p>
-        {jobs &&
-          jobs.map((job, i) => (
-            <span key={job}>
-              {job}
-              {i !== jobs.length - 1 && ', '}
-            </span>
-          ))}
-      </p>
-    </CrewMemberContainer>
-  );
-};
 
 const Cast = ({ members }) => {
   return (
