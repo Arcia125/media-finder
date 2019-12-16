@@ -15,7 +15,7 @@ import { themeSpacing, themeMargin, themeFontFamily } from '../themeHelpers';
 import Thumbnail, { ThumbnailContainer, ThumbnailDetails } from './Thumbnail';
 import ArrowIcon from './ArrowIcon';
 
-const SLIDE_WIDTH = 216;
+const SLIDE_WIDTH = 170;
 const SLIDE_GAP = 4;
 
 const TrackTitle = styled.h2`
@@ -51,6 +51,10 @@ export const ThumbSlide = styled(Slide)`
 const Slider = styled(BaseSlider)`
   width: ${SLIDE_WIDTH - SLIDE_GAP}px;
   overflow: visible;
+
+  &:hover {
+    z-index: 10;
+  }
 
   &:hover ${ThumbSlide} {
     /* makes the ThumbSlides before the hovered slide shift left */
@@ -152,8 +156,8 @@ const PreviewTrack = ({ title, movies, isPending }) => {
     <TrackContainer>
       <TrackTitle>{title}</TrackTitle>
       <Carousel
-        naturalSlideWidth={100}
-        naturalSlideHeight={56}
+        naturalSlideWidth={400}
+        naturalSlideHeight={600}
         totalSlides={movies.length}
         dragEnabled={false}
       >
