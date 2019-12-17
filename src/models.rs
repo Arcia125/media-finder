@@ -2,7 +2,7 @@
 #[derive(Serialize, Deserialize)]
 pub struct MovieMeta {
     pub adult: bool,
-    pub backdrop_path: String,
+    pub backdrop_path: Option<String>,
     pub genre_ids: Option<Vec<i32>>,
     pub id: usize,
     pub original_language: String,
@@ -70,7 +70,7 @@ pub struct Movie {
     pub vote_average: f32,
     pub overview: String,
     pub runtime: Option<i32>,
-    pub backdrop_path: String
+    pub backdrop_path: Option<String>
 }
 
 impl Movie {
