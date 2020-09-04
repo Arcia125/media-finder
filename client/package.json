@@ -15,7 +15,7 @@
     "@types/react-dom": "^16.9.4",
     "parcel-bundler": "^1.12.4",
     "pure-react-carousel": "^1.24.1",
-    "react": "0.0.0-experimental-b53ea6ca0",
+    "react": "0.14.0",
     "react-dom": "0.0.0-experimental-b53ea6ca0",
     "react-router-dom": "^5.1.2",
     "styled-components": "^4.4.1",
